@@ -16,12 +16,13 @@ RUN sed -i -e 's/^pathToSaveBase=.*/pathToSaveBase=\"\/var\/www\/html\/\";/g' $N
 
 # Add password protection to .htaccess and Enable it
 RUN echo 'AuthType Basic \n AuthName "NOD32 Updater. Please login"\n AuthUserFile "'$NOD_FOLDER'/.htpasswd" \n Require valid-user' >> $NOD_FOLDER/mirror/.htaccess
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride all/' /etc/apache2/apache2.conf
+RUN sed -i -e '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride all/' /etc/apache2/apache2.conf
+#RUN sed -i 's/^LogLevel.*/LogLevel debug/g' /etc/apache2/apache2.conf
 
 # Add crontab file in the cron directory and enable cron
 COPY crontab /etc/cron.d/hello-cron
 RUN chmod 0644 /etc/cron.d/hello-cron;\
-	touch /var/log/cron.log
+	touch /var/log/nod32.log
 
 ENV NOD_VERSIONS='v4 v5 v6 v7 v8' NOD_LANGS='1033 1049 1058' NOD_LOG=nod32 NOD_PWD=nod32
 
